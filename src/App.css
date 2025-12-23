@@ -649,3 +649,120 @@ tr.selected {
     grid-template-columns: 1fr;
   }
 }
+
+/* Mode Indicator & Toggle */
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.mode-indicator {
+  font-size: 1.25rem;
+  opacity: 0.7;
+}
+
+.mode-toggle-btn {
+  background: #2a2f3d;
+  color: #e09f3e;
+  border: 1px solid #e09f3e;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: all 0.3s;
+  margin-top: 0.5rem;
+}
+
+.mode-toggle-btn:hover {
+  background: #e09f3e;
+  color: #000;
+}
+
+/* Force Mobile Mode Styling */
+body.mode-mobile .movie-list table {
+  display: none !important;
+}
+
+body.mode-mobile .mobile-movie-cards {
+  display: block !important;
+}
+
+body.mode-mobile .nav-links {
+  flex-direction: column;
+}
+
+body.mode-mobile .cards {
+  grid-template-columns: 1fr !important;
+}
+
+body.mode-mobile .filters {
+  flex-direction: column !important;
+}
+
+body.mode-mobile .actions {
+  flex-direction: column !important;
+}
+
+body.mode-mobile button:not(.mobile-menu-toggle):not(.mode-toggle-btn) {
+  width: 100%;
+}
+
+body.mode-mobile .library-card {
+  flex-direction: column;
+}
+
+body.mode-mobile .request-header {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+/* Force Desktop Mode Styling */
+body.mode-desktop .mobile-menu-toggle {
+  display: none !important;
+}
+
+body.mode-desktop .nav-links {
+  display: flex !important;
+  position: static !important;
+  flex-direction: row !important;
+  background: transparent !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+}
+
+body.mode-desktop .movie-list table {
+  display: table !important;
+}
+
+body.mode-desktop .mobile-movie-cards {
+  display: none !important;
+}
+
+body.mode-desktop .mode-toggle-btn {
+  margin-top: 0;
+  margin-left: 1rem;
+}
+
+/* Responsive adjustments for mode toggle */
+@media (max-width: 768px) {
+  body.mode-desktop .main-content {
+    padding: 1rem;
+  }
+  
+  body.mode-desktop table {
+    font-size: 0.875rem;
+  }
+  
+  body.mode-desktop th,
+  body.mode-desktop td {
+    padding: 0.5rem;
+  }
+}
+
+@media (min-width: 769px) {
+  .mode-toggle-btn {
+    margin-top: 0;
+    margin-left: 1rem;
+  }
+}

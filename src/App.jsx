@@ -4,11 +4,13 @@ import Dashboard from './components/Dashboard'
 import Cleanup from './components/Cleanup'
 import Scanner from './components/Scanner'
 import Requests from './components/Requests'
+import { useDeviceMode } from './hooks/useDeviceMode'
 import './App.css'
 
 function Navigation() {
   const location = useLocation()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const { mode, toggleMode, isMobile } = useDeviceMode()
 
   const isActive = (path) => location.pathname === path
 
@@ -20,6 +22,7 @@ function Navigation() {
     <nav className="navbar">
       <div className="nav-brand">
         <h1>🎬 Plex Manager</h1>
+        <span className="mode-indicator">{isMobile ? '📱' : '🖥️'}</span>
       </div>
       <button
         className="mobile-menu-toggle"
@@ -41,6 +44,9 @@ function Navigation() {
         <Link to="/requests" className={isActive('/requests') ? 'active' : ''} onClick={handleLinkClick}>
           Requests
         </Link>
+        <button className="mode-toggle-btn" onClick={toggleMode} title={`Switch to ${isMobile ? 'Desktop' : 'Mobile'} Mode`}>
+          {isMobile ? '🖥️ Desktop' : '📱 Mobile'}
+        </button>
       </div>
     </nav>
   )
