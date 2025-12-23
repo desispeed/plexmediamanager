@@ -62,6 +62,31 @@ def health_check():
     })
 
 
+@app.route('/api/diagnostics', methods=['GET'])
+def diagnostics():
+    """Run diagnostic checks for auth module"""
+    import subprocess
+    try:
+        result = subprocess.run(
+            [sys.executable, 'test_railway_auth.py'],
+            cwd=os.path.dirname(__file__),
+            capture_output=True,
+            text=True,
+            timeout=10
+        )
+        return jsonify({
+            'status': 'success',
+            'output': result.stdout,
+            'errors': result.stderr,
+            'returncode': result.returncode
+        })
+    except Exception as e:
+        return jsonify({
+            'status': 'error',
+            'error': str(e)
+        }), 500
+
+
 # =============================================================================
 # Authentication Endpoints
 # =============================================================================
