@@ -20,6 +20,13 @@ except ImportError as e:
     print(f"Error importing modules: {e}")
     print("Make sure plexapi is installed: pip install plexapi flask flask-cors")
 
+try:
+    from auth import auth_manager
+    AUTH_ENABLED = True
+except ImportError as e:
+    print(f"Warning: Authentication module not available: {e}")
+    AUTH_ENABLED = False
+
 app = Flask(__name__)
 CORS(app)  # Enable CORS for React frontend
 
@@ -39,7 +46,141 @@ if not PLEX_URL or not PLEX_TOKEN:
 @app.route('/api/health', methods=['GET'])
 def health_check():
     """Health check endpoint"""
-    return jsonify({'status': 'ok', 'message': 'Plex Manager API is running'})
+    auth_status = 'enabled' if AUTH_ENABLED else 'disabled'
+    return jsonify({
+        'status': 'ok',
+        'message': 'Plex Manager API is running',
+        'auth': auth_status
+    })
+
+
+# =============================================================================
+# Authentication Endpoints
+# =============================================================================
+
+@app.route('/api/auth/register', methods=['POST'])
+def register():
+    """Register new user with MFA"""
+    if not AUTH_ENABLED:
+        return jsonify({'error': 'Authentication not enabled'}), 503
+
+    try:
+        data = request.json
+        username = data.get('username')
+        password = data.get('password')
+
+        if not username or not password:
+            return jsonify({'error': 'Username and password required'}), 400
+
+        totp_secret, error = auth_manager.create_user(username, password)
+
+        if error:
+            return jsonify({'error': error}), 400
+
+        # Generate QR code for Microsoft Authenticator
+        qr_code = auth_manager.generate_qr_code(username)
+
+        return jsonify({
+            'status': 'success',
+            'message': 'User created. Scan QR code with Microsoft Authenticator',
+            'qr_code': qr_code,
+            'totp_secret': totp_secret
+        }), 201
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/auth/verify-totp', methods=['POST'])
+def verify_totp():
+    """Verify TOTP code and enable MFA"""
+    if not AUTH_ENABLED:
+        return jsonify({'error': 'Authentication not enabled'}), 503
+
+    try:
+        data = request.json
+        username = data.get('username')
+        token = data.get('token')
+
+        if not username or not token:
+            return jsonify({'error': 'Username and token required'}), 400
+
+        if auth_manager.verify_totp(username, token):
+            auth_manager.enable_totp(username)
+            return jsonify({
+                'status': 'success',
+                'message': 'MFA enabled successfully'
+            })
+        else:
+            return jsonify({'error': 'Invalid token'}), 401
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/auth/login', methods=['POST'])
+def login():
+    """Login with username, password, and MFA token"""
+    if not AUTH_ENABLED:
+        return jsonify({'error': 'Authentication not enabled'}), 503
+
+    try:
+        data = request.json
+        username = data.get('username')
+        password = data.get('password')
+        token = data.get('token')
+
+        if not username or not password:
+            return jsonify({'error': 'Username and password required'}), 400
+
+        # Verify password
+        if not auth_manager.verify_password(username, password):
+            return jsonify({'error': 'Invalid credentials'}), 401
+
+        # Check if MFA is enabled
+        user = auth_manager.users.get(username)
+        if user and user.get('totp_enabled'):
+            if not token:
+                return jsonify({
+                    'status': 'mfa_required',
+                    'message': 'MFA token required'
+                }), 200
+
+            # Verify MFA token
+            if not auth_manager.verify_totp(username, token):
+                return jsonify({'error': 'Invalid MFA token'}), 401
+
+        # Generate JWT
+        jwt_token = auth_manager.generate_jwt(username)
+
+        return jsonify({
+            'status': 'success',
+            'token': jwt_token,
+            'username': username
+        })
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/auth/verify', methods=['GET'])
+def verify_token():
+    """Verify JWT token"""
+    if not AUTH_ENABLED:
+        return jsonify({'error': 'Authentication not enabled'}), 503
+
+    token = request.headers.get('Authorization')
+    if not token:
+        return jsonify({'error': 'No token provided'}), 401
+
+    if token.startswith('Bearer '):
+        token = token[7:]
+
+    username = auth_manager.verify_jwt(token)
+    if username:
+        return jsonify({'valid': True, 'username': username})
+    else:
+        return jsonify({'valid': False}), 401
 
 
 @app.route('/api/plex/status', methods=['GET'])

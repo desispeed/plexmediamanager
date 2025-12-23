@@ -50,3 +50,7 @@ htmlcov/
 # Production
 *.sqlite3
 *.db
+
+# User data
+users.json
+backend/users.json
