@@ -23,8 +23,16 @@ except ImportError as e:
 try:
     from auth import auth_manager
     AUTH_ENABLED = True
+    print("✓ Authentication module loaded successfully")
 except ImportError as e:
     print(f"Warning: Authentication module not available: {e}")
+    print(f"  Make sure all auth dependencies are installed:")
+    print(f"  pip install PyJWT pyotp qrcode Pillow bcrypt")
+    AUTH_ENABLED = False
+except Exception as e:
+    print(f"Error loading authentication module: {e}")
+    import traceback
+    traceback.print_exc()
     AUTH_ENABLED = False
 
 app = Flask(__name__)
