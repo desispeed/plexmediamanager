@@ -13,9 +13,6 @@ import sys
 # Load environment variables from .env file
 load_dotenv()
 
-# Add parent directory to path to import plex_cleanup
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', 'plex-cleanup'))
-
 try:
     from plex_cleanup import PlexCleanup
     from plexapi.server import PlexServer
