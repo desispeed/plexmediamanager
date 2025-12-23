@@ -19,6 +19,13 @@ except ImportError:
     print("Install with: pip install plexapi")
     sys.exit(1)
 
+# Setup logging first
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
+
 try:
     from telegram import Bot
     from telegram.error import TelegramError
@@ -26,12 +33,6 @@ try:
 except ImportError:
     TELEGRAM_AVAILABLE = False
     logger.warning("python-telegram-bot not installed. Telegram notifications disabled.")
-
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s'
-)
-logger = logging.getLogger(__name__)
 
 
 class PlexCleanup:
