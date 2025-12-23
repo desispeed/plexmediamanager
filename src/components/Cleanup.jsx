@@ -162,6 +162,7 @@ function Cleanup() {
             </button>
           </div>
 
+          {/* Desktop Table View */}
           <div className="movie-list">
             <table>
               <thead>
@@ -195,6 +196,46 @@ function Cleanup() {
                 ))}
               </tbody>
             </table>
+          </div>
+
+          {/* Mobile Card View */}
+          <div className="mobile-movie-cards">
+            {movies.map((movie, index) => (
+              <div
+                key={index}
+                className={`mobile-movie-card ${selectedMovies.has(index) ? 'selected' : ''}`}
+              >
+                <div className="mobile-movie-card-header">
+                  <div className="mobile-movie-card-title">
+                    <h4>{movie.title}</h4>
+                    <div className="year">{movie.year || 'N/A'}</div>
+                  </div>
+                  <input
+                    type="checkbox"
+                    checked={selectedMovies.has(index)}
+                    onChange={() => toggleMovie(index)}
+                  />
+                </div>
+                <div className="mobile-movie-card-details">
+                  <div className="mobile-movie-card-detail">
+                    <span className="label">Views</span>
+                    <span className="value">{movie.viewCount}</span>
+                  </div>
+                  <div className="mobile-movie-card-detail">
+                    <span className="label">Size</span>
+                    <span className="value">{(movie.fileSizeMB / 1024).toFixed(2)} GB</span>
+                  </div>
+                  <div className="mobile-movie-card-detail">
+                    <span className="label">Last Watched</span>
+                    <span className="value">{movie.lastViewed}</span>
+                  </div>
+                  <div className="mobile-movie-card-detail">
+                    <span className="label">Added</span>
+                    <span className="value">{movie.addedDate}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </>
       )}
