@@ -284,10 +284,18 @@ def update_request(request_id):
 
 
 if __name__ == '__main__':
+    # Get port from environment variable (Railway uses PORT)
+    port = int(os.getenv('PORT', 5001))
+
+    # Determine if we're in production (Railway sets RAILWAY_ENVIRONMENT)
+    is_production = os.getenv('RAILWAY_ENVIRONMENT') is not None
+
     print("=" * 60)
     print("Plex Manager API Server")
     print("=" * 60)
+    print(f"Environment: {'Production' if is_production else 'Development'}")
     print(f"Plex Server: {PLEX_URL}")
-    print(f"API running on: http://localhost:5001")
+    print(f"API running on port: {port}")
     print("=" * 60)
-    app.run(debug=True, host='0.0.0.0', port=5001)
+
+    app.run(debug=not is_production, host='0.0.0.0', port=port)
