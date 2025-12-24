@@ -149,24 +149,30 @@ class PlexCleanup:
 
         return messages
 
-    def get_unwatched_movies(self, max_view_count: int = 1, days_since_watched: int = None) -> List[Dict]:
+    def get_unwatched_movies(self, max_view_count: int = 1, days_since_watched: int = None, days_since_added: int = None) -> List[Dict]:
         """
         Get movies that have been watched max_view_count times or less
-        Optionally filter by last watched date
+        Optionally filter by last watched date and date added
 
         Args:
             max_view_count: Maximum view count (default: 1)
             days_since_watched: Only include movies not watched in last X days (optional)
+            days_since_added: Only include movies added more than X days ago (optional)
 
         Returns:
             List of movie dictionaries with details
         """
         unwatched_movies = []
-        cutoff_date = None
+        watched_cutoff_date = None
+        added_cutoff_date = None
 
         if days_since_watched:
-            cutoff_date = datetime.now() - timedelta(days=days_since_watched)
-            logger.info(f"Filtering for movies not watched since {cutoff_date.strftime('%Y-%m-%d')}")
+            watched_cutoff_date = datetime.now() - timedelta(days=days_since_watched)
+            logger.info(f"Filtering for movies not watched since {watched_cutoff_date.strftime('%Y-%m-%d')}")
+
+        if days_since_added:
+            added_cutoff_date = datetime.now() - timedelta(days=days_since_added)
+            logger.info(f"Filtering for movies added before {added_cutoff_date.strftime('%Y-%m-%d')}")
 
         try:
             # Get all movie libraries
@@ -189,15 +195,26 @@ class PlexCleanup:
                     if view_count > max_view_count:
                         continue
 
-                    # If time-based filtering is enabled
-                    if cutoff_date:
+                    # Filter by date added if specified
+                    if added_cutoff_date:
+                        added_date = movie.addedAt if hasattr(movie, 'addedAt') and movie.addedAt else None
+
+                        # If no added date, skip it
+                        if added_date is None:
+                            continue
+                        # If added recently (within cutoff period), skip it
+                        elif added_date > added_cutoff_date:
+                            continue
+
+                    # If time-based filtering by last watched is enabled
+                    if watched_cutoff_date:
                         last_viewed = movie.lastViewedAt if hasattr(movie, 'lastViewedAt') and movie.lastViewedAt else None
 
                         # If never watched, include it
                         if last_viewed is None:
                             pass  # Include it
                         # If watched recently (within cutoff period), skip it
-                        elif last_viewed > cutoff_date:
+                        elif last_viewed > watched_cutoff_date:
                             continue
                         # If watched but before cutoff date, include it
 
@@ -224,10 +241,13 @@ class PlexCleanup:
             # Sort by view count, then by added date (oldest first)
             unwatched_movies.sort(key=lambda x: (x['view_count'], x['added_date']))
 
+            # Build log message based on filters
+            filter_msg = f"Found {len(unwatched_movies)} movies with {max_view_count} view(s) or less"
+            if days_since_added:
+                filter_msg += f", added more than {days_since_added} days ago"
             if days_since_watched:
-                logger.info(f"Found {len(unwatched_movies)} movies with {max_view_count} view(s) or less, not watched in {days_since_watched} days")
-            else:
-                logger.info(f"Found {len(unwatched_movies)} movies with {max_view_count} view(s) or less")
+                filter_msg += f", not watched in {days_since_watched} days"
+            logger.info(filter_msg)
 
         except Exception as e:
             logger.error(f"Error scanning movies: {e}")
@@ -353,6 +373,7 @@ def main():
     parser.add_argument("--token", required=True, help="Plex authentication token")
     parser.add_argument("--max-views", type=int, default=1, help="Maximum view count (default: 1)")
     parser.add_argument("--days", type=int, help="Only include movies not watched in last X days")
+    parser.add_argument("--days-added", type=int, help="Only include movies added more than X days ago")
     parser.add_argument("--dry-run", action="store_true", help="Preview only, don't delete")
     parser.add_argument("--auto-delete", action="store_true", help="Skip confirmation (use with caution!)")
     parser.add_argument("--telegram-token", help="Telegram bot token")
@@ -373,7 +394,8 @@ def main():
         # Get unwatched movies
         unwatched = cleanup.get_unwatched_movies(
             max_view_count=args.max_views,
-            days_since_watched=args.days
+            days_since_watched=args.days,
+            days_since_added=args.days_added
         )
 
         if args.dry_run:

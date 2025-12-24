@@ -238,9 +238,14 @@ def get_movies():
     try:
         max_views = int(request.args.get('max_views', MAX_VIEWS))
         days = int(request.args.get('days', DAYS_NOT_WATCHED)) if request.args.get('days') else DAYS_NOT_WATCHED
+        days_added = int(request.args.get('days_added')) if request.args.get('days_added') else None
 
         cleanup = PlexCleanup(PLEX_URL, PLEX_TOKEN)
-        movies = cleanup.get_unwatched_movies(max_view_count=max_views, days_since_watched=days)
+        movies = cleanup.get_unwatched_movies(
+            max_view_count=max_views,
+            days_since_watched=days,
+            days_since_added=days_added
+        )
 
         # Clear previous cache
         movies_cache.clear()

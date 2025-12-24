@@ -8,15 +8,18 @@ function Cleanup() {
   const [selectedMovies, setSelectedMovies] = useState(new Set())
   const [maxViews, setMaxViews] = useState(1)
   const [days, setDays] = useState(30)
+  const [daysAdded, setDaysAdded] = useState(0)
   const [totalCount, setTotalCount] = useState(0)
   const [totalSize, setTotalSize] = useState(0)
 
   const fetchMovies = async () => {
     try {
       setLoading(true)
-      const response = await axios.get(`${API_BASE}/plex/movies`, {
-        params: { max_views: maxViews, days }
-      })
+      const params = { max_views: maxViews, days }
+      if (daysAdded > 0) {
+        params.days_added = daysAdded
+      }
+      const response = await axios.get(`${API_BASE}/plex/movies`, { params })
       setMovies(response.data.movies)
       setTotalCount(response.data.totalCount)
       setTotalSize(response.data.totalSizeGB)
@@ -134,6 +137,18 @@ function Cleanup() {
             onChange={(e) => setDays(parseInt(e.target.value))}
             min="1"
             max="365"
+          />
+        </div>
+
+        <div className="filter-group">
+          <label>Added more than (days ago):</label>
+          <input
+            type="number"
+            value={daysAdded}
+            onChange={(e) => setDaysAdded(parseInt(e.target.value))}
+            min="0"
+            max="365"
+            placeholder="0 = no filter"
           />
         </div>
 
