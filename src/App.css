@@ -766,3 +766,50 @@ body.mode-desktop .mode-toggle-btn {
     margin-left: 1rem;
   }
 }
+
+/* User Section & Logout */
+.user-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-left: 1rem;
+  padding-left: 1rem;
+  border-left: 1px solid #2a2f3d;
+}
+
+.username {
+  color: #e09f3e;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.logout-btn {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.3s;
+}
+
+.logout-btn:hover {
+  background: #c82333;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+}
+
+@media (max-width: 768px) {
+  .user-section {
+    border-left: none;
+    border-top: 1px solid #2a2f3d;
+    margin-left: 0;
+    padding-left: 0;
+    padding-top: 1rem;
+    margin-top: 1rem;
+    width: 100%;
+    justify-content: space-between;
+  }
+}
