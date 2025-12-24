@@ -1,17 +1,22 @@
 # Plex Manager
 
-A modern web application for managing your Plex Media Server with features for cleanup, library scanning, and media requests.
+A modern web application for managing your Plex Media Server with features for cleanup, library scanning, media requests, and multi-factor authentication.
 
-🌐 **Live Demo**: [mediamanagerdx.com](https://mediamanagerdx.com)
+## Screenshot
+
+> 📸 **Coming Soon**: Screenshot of the dashboard will be added here
+> See [screenshots/README.md](./screenshots/README.md) for instructions on how to add a screenshot
 
 ## Features
 
-- **Dashboard**: View Plex server status and quick actions
-- **Media Cleanup**: Browse and delete unwatched movies to free up space
-- **Library Scanner**: Trigger Plex library scans
-- **Media Requests**: Submit and manage media requests
-- **Mobile/Desktop Modes**: Auto-detecting responsive layouts with manual toggle
-- **Live Deployment**: Frontend on Vercel, Backend on Railway
+- **🔐 Multi-Factor Authentication**: Secure login with TOTP (Microsoft Authenticator, Google Authenticator)
+- **👤 User Management**: User registration with QR code setup for MFA
+- **📊 Dashboard**: View Plex server status and quick actions
+- **🧹 Media Cleanup**: Browse and delete unwatched movies to free up space
+- **📚 Library Scanner**: Trigger Plex library scans
+- **🎬 Media Requests**: Submit and manage media requests
+- **📱 Mobile/Desktop Modes**: Auto-detecting responsive layouts with manual toggle
+- **🚀 Cloud Deployment**: Frontend on Vercel, Backend on Railway
 
 ## Tech Stack
 
@@ -107,13 +112,22 @@ App runs on `http://localhost:5173`
 
 ## API Endpoints
 
-- `GET /api/health` - Health check
+### Authentication
+- `POST /api/auth/register` - Register new user with MFA
+- `POST /api/auth/verify-totp` - Verify TOTP code
+- `POST /api/auth/login` - Login with credentials + MFA
+- `GET /api/auth/verify` - Verify JWT token
+
+### Plex Management
+- `GET /api/health` - Health check with auth status
 - `GET /api/plex/status` - Get Plex server status
 - `GET /api/plex/movies` - Get movies matching cleanup criteria
 - `POST /api/plex/movies/delete` - Delete selected movies
 - `GET /api/plex/libraries` - Get list of libraries
 - `POST /api/plex/scan` - Trigger library scan
 - `POST /api/plex/restart` - Restart Plex server
+
+### Media Requests
 - `GET /api/requests` - Get media requests
 - `POST /api/requests` - Create media request
 - `PATCH /api/requests/:id` - Update request status
@@ -185,14 +199,20 @@ https://plex.tv/devices.xml
 - Saves preference in localStorage
 - Optimized layouts for each mode
 
-## Security Warning
+## Security Features
+
+🔒 **Built-in Security**:
+- **Multi-Factor Authentication**: TOTP-based 2FA with authenticator apps
+- **Password Hashing**: bcrypt with automatic salt generation
+- **JWT Tokens**: Secure session management with 24-hour expiration
+- **Protected Routes**: All sensitive pages require authentication
+- **Environment Variables**: Credentials never committed to git
 
 ⚠️ **Important**:
 - Never commit your Plex token or credentials to version control
-- Use environment variables for sensitive data
-- The `.env` file is excluded in `.gitignore`
-- Consider adding authentication before exposing publicly
-- This app has full delete permissions - protect the URL!
+- Use strong passwords (minimum 8 characters)
+- Keep your authenticator app secure
+- This app has full delete permissions on your Plex server
 
 ## Contributing
 
