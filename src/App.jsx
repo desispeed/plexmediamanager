@@ -6,6 +6,8 @@ import Scanner from './components/Scanner'
 import Requests from './components/Requests'
 import Login from './components/Login'
 import Register from './components/Register'
+import ForgotPassword from './components/ForgotPassword'
+import ResetPassword from './components/ResetPassword'
 import ProtectedRoute from './components/ProtectedRoute'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
 import { useDeviceMode } from './hooks/useDeviceMode'
@@ -28,8 +30,9 @@ function Navigation() {
     setMobileMenuOpen(false)
   }
 
-  // Don't show navigation on login/register pages
-  if (location.pathname === '/login' || location.pathname === '/register') {
+  // Don't show navigation on auth pages
+  const authPages = ['/login', '/register', '/forgot-password', '/reset-password'];
+  if (authPages.includes(location.pathname)) {
     return null
   }
 
@@ -86,6 +89,8 @@ function App() {
               {/* Public routes */}
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
 
               {/* Protected routes */}
               <Route path="/dashboard" element={

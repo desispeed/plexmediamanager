@@ -12,6 +12,7 @@ import pyotp
 import qrcode
 import io
 import base64
+import secrets
 from datetime import datetime, timedelta
 from functools import wraps
 from flask import request, jsonify
@@ -20,6 +21,7 @@ from flask import request, jsonify
 JWT_SECRET = os.getenv('JWT_SECRET', 'change-this-secret-key-in-production')
 JWT_ALGORITHM = 'HS256'
 JWT_EXPIRATION_HOURS = 24
+RESET_TOKEN_EXPIRATION_HOURS = 1
 USERS_FILE = 'users.json'
 
 class AuthManager:
@@ -86,6 +88,52 @@ class AuthManager:
             self._save_users()
             return True
         return False
+
+    def generate_reset_token(self, username):
+        """Generate a password reset token"""
+        if username not in self.users:
+            return None, "User not found"
+
+        # Generate secure random token
+        reset_token = secrets.token_urlsafe(32)
+
+        # Store token with expiration
+        self.users[username]['reset_token'] = reset_token
+        self.users[username]['reset_token_expires'] = (
+            datetime.now() + timedelta(hours=RESET_TOKEN_EXPIRATION_HOURS)
+        ).isoformat()
+
+        self._save_users()
+        return reset_token, None
+
+    def verify_reset_token(self, token):
+        """Verify reset token and return username if valid"""
+        for username, user_data in self.users.items():
+            if user_data.get('reset_token') == token:
+                # Check if token has expired
+                expires_str = user_data.get('reset_token_expires')
+                if expires_str:
+                    expires = datetime.fromisoformat(expires_str)
+                    if datetime.now() < expires:
+                        return username
+        return None
+
+    def reset_password(self, token, new_password):
+        """Reset password using valid token"""
+        username = self.verify_reset_token(token)
+        if not username:
+            return False, "Invalid or expired reset token"
+
+        # Hash new password
+        password_hash = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt())
+
+        # Update password and clear reset token
+        self.users[username]['password_hash'] = password_hash.decode('utf-8')
+        self.users[username].pop('reset_token', None)
+        self.users[username].pop('reset_token_expires', None)
+
+        self._save_users()
+        return True, None
     
     def generate_qr_code(self, username):
         """Generate QR code for TOTP setup"""

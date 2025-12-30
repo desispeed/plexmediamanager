@@ -216,6 +216,76 @@ def verify_token():
         return jsonify({'valid': False}), 401
 
 
+@app.route('/api/auth/request-reset', methods=['POST'])
+def request_password_reset():
+    """Request password reset - generates reset token"""
+    if not AUTH_ENABLED:
+        return jsonify({'error': 'Authentication not enabled'}), 503
+
+    try:
+        data = request.json
+        username = data.get('username')
+
+        if not username:
+            return jsonify({'error': 'Username required'}), 400
+
+        reset_token, error = auth_manager.generate_reset_token(username)
+
+        if error:
+            # For security, don't reveal if user exists
+            # Return success anyway to prevent username enumeration
+            return jsonify({
+                'status': 'success',
+                'message': 'If the username exists, a reset token has been generated. Please check your authenticator app or contact admin.'
+            })
+
+        # In production, you would email this link or show it to admin
+        # For now, we'll return it directly (only for demo/testing)
+        reset_link = f"{request.host_url}reset-password?token={reset_token}"
+
+        return jsonify({
+            'status': 'success',
+            'message': 'Password reset token generated',
+            'reset_token': reset_token,  # Remove this in production!
+            'reset_link': reset_link,    # Remove this in production!
+            'username': username
+        })
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/auth/reset-password', methods=['POST'])
+def reset_password():
+    """Reset password using valid reset token"""
+    if not AUTH_ENABLED:
+        return jsonify({'error': 'Authentication not enabled'}), 503
+
+    try:
+        data = request.json
+        token = data.get('token')
+        new_password = data.get('password')
+
+        if not token or not new_password:
+            return jsonify({'error': 'Token and new password required'}), 400
+
+        if len(new_password) < 8:
+            return jsonify({'error': 'Password must be at least 8 characters'}), 400
+
+        success, error = auth_manager.reset_password(token, new_password)
+
+        if error:
+            return jsonify({'error': error}), 401
+
+        return jsonify({
+            'status': 'success',
+            'message': 'Password reset successfully. You can now login with your new password.'
+        })
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
 @app.route('/api/plex/status', methods=['GET'])
 def plex_status():
     """Get Plex server status"""
