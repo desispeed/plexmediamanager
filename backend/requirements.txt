@@ -1,0 +1,9 @@
+Flask==3.0.0
+flask-cors==4.0.0
+plexapi==4.15.6
+python-dotenv==1.0.0
+PyJWT==2.8.0
+pyotp==2.9.0
+qrcode==7.4.2
+Pillow>=10.1.0
+bcrypt==4.1.2
