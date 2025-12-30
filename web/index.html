@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plex Media Manager - Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Dark Mode Toggle -->
+    <div class="dark-mode-toggle">
+        <button class="btn btn-secondary" onclick="toggleDarkMode()">
+            🌙 Toggle Dark Mode
+        </button>
+    </div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-nav">
+            <h2 style="margin-bottom: 1.5rem; padding: 0 1rem;">Plex Manager</h2>
+
+            <a href="#" class="sidebar-nav-item active">
+                📊 Dashboard
+            </a>
+            <a href="#" class="sidebar-nav-item">
+                🎬 Movies
+            </a>
+            <a href="#" class="sidebar-nav-item">
+                📺 TV Shows
+            </a>
+            <a href="#" class="sidebar-nav-item">
+                💾 Storage
+            </a>
+            <a href="#" class="sidebar-nav-item">
+                🗑️ Cleanup
+            </a>
+            <a href="#" class="sidebar-nav-item">
+                ⚙️ Settings
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <h1>Plex Media Dashboard</h1>
+        <p class="text-muted" style="margin-bottom: 2rem;">Monitor and manage your media library</p>
+
+        <!-- Stats Grid -->
+        <div class="grid grid-cols-4" style="margin-bottom: 2rem;">
+            <div class="card">
+                <h4 class="text-muted">Total Movies</h4>
+                <h2 style="margin-top: 0.5rem;">107</h2>
+                <p class="text-muted" style="font-size: var(--text-sm); margin-top: 0.5rem;">1,337.69 GB</p>
+            </div>
+
+            <div class="card">
+                <h4 class="text-muted">TV Shows</h4>
+                <h2 style="margin-top: 0.5rem;">33</h2>
+                <p class="text-muted" style="font-size: var(--text-sm); margin-top: 0.5rem;">709.51 GB</p>
+            </div>
+
+            <div class="card">
+                <h4 class="text-muted">Storage Used</h4>
+                <h2 style="margin-top: 0.5rem;">57.2%</h2>
+                <p class="text-muted" style="font-size: var(--text-sm); margin-top: 0.5rem;">2,115 GB / 3,700 GB</p>
+            </div>
+
+            <div class="card">
+                <h4 class="text-muted">Available Space</h4>
+                <h2 style="margin-top: 0.5rem;">1,585 GB</h2>
+                <p class="text-muted" style="font-size: var(--text-sm); margin-top: 0.5rem;">42.8% free</p>
+            </div>
+        </div>
+
+        <!-- Storage Chart -->
+        <div class="card" style="margin-bottom: 2rem;">
+            <h3 style="margin-bottom: 1rem;">Storage Breakdown</h3>
+
+            <div style="margin-bottom: 1rem;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                    <span>Movies</span>
+                    <span class="text-muted">1,337.69 GB (36.2%)</span>
+                </div>
+                <div style="height: 8px; background-color: var(--muted); border-radius: 999px; overflow: hidden;">
+                    <div style="width: 36.2%; height: 100%; background-color: var(--chart-1);"></div>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 1rem;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                    <span>TV Shows</span>
+                    <span class="text-muted">709.51 GB (19.2%)</span>
+                </div>
+                <div style="height: 8px; background-color: var(--muted); border-radius: 999px; overflow: hidden;">
+                    <div style="width: 19.2%; height: 100%; background-color: var(--chart-2);"></div>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 1rem;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                    <span>Training Videos</span>
+                    <span class="text-muted">67.59 GB (1.8%)</span>
+                </div>
+                <div style="height: 8px; background-color: var(--muted); border-radius: 999px; overflow: hidden;">
+                    <div style="width: 1.8%; height: 100%; background-color: var(--chart-3);"></div>
+                </div>
+            </div>
+
+            <div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                    <span>Free Space</span>
+                    <span class="text-muted">1,584.57 GB (42.8%)</span>
+                </div>
+                <div style="height: 8px; background-color: var(--muted); border-radius: 999px; overflow: hidden;">
+                    <div style="width: 42.8%; height: 100%; background-color: var(--chart-4);"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="grid grid-cols-2">
+            <div class="card">
+                <h3 style="margin-bottom: 1rem;">Cleanup Candidates</h3>
+                <p class="text-muted" style="margin-bottom: 1.5rem;">74 movies ready for deletion</p>
+
+                <div style="margin-bottom: 1rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0;">
+                        <div>
+                            <div style="font-weight: var(--font-weight-medium);">Good Boy (2025)</div>
+                            <div class="text-muted" style="font-size: var(--text-sm);">13.1 GB • Never watched</div>
+                        </div>
+                        <button class="btn-destructive" style="padding: 0.25rem 0.75rem; font-size: var(--text-sm);">Delete</button>
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0;">
+                        <div>
+                            <div style="font-weight: var(--font-weight-medium);">Annie Hall (1977)</div>
+                            <div class="text-muted" style="font-size: var(--text-sm);">27.0 GB • Never watched</div>
+                        </div>
+                        <button class="btn-destructive" style="padding: 0.25rem 0.75rem; font-size: var(--text-sm);">Delete</button>
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0;">
+                        <div>
+                            <div style="font-weight: var(--font-weight-medium);">Battle Royale (2000)</div>
+                            <div class="text-muted" style="font-size: var(--text-sm);">76.3 GB • Never watched</div>
+                        </div>
+                        <button class="btn-destructive" style="padding: 0.25rem 0.75rem; font-size: var(--text-sm);">Delete</button>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" style="width: 100%; margin-top: 1rem;">View All Candidates</button>
+            </div>
+
+            <div class="card">
+                <h3 style="margin-bottom: 1rem;">Quick Actions</h3>
+
+                <button class="btn btn-primary" style="width: 100%; margin-bottom: 0.75rem; text-align: left;">
+                    🔍 Preview Movies to Delete
+                </button>
+
+                <button class="btn btn-secondary" style="width: 100%; margin-bottom: 0.75rem; text-align: left;">
+                    💾 Analyze Storage Usage
+                </button>
+
+                <button class="btn btn-secondary" style="width: 100%; margin-bottom: 0.75rem; text-align: left;">
+                    📊 Check Disk Usage
+                </button>
+
+                <button class="btn btn-secondary" style="width: 100%; margin-bottom: 1.5rem; text-align: left;">
+                    ⚙️ Configure Settings
+                </button>
+
+                <div style="padding: 1rem; background-color: var(--accent); border-radius: var(--radius);">
+                    <h4 style="margin-bottom: 0.5rem;">💡 Tip</h4>
+                    <p style="font-size: var(--text-sm); color: var(--accent-foreground);">
+                        You can free up 929 GB by deleting unwatched movies older than 30 days.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Example -->
+        <div class="card" style="margin-top: 2rem; max-width: 600px;">
+            <h3 style="margin-bottom: 1rem;">Cleanup Settings</h3>
+
+            <div style="margin-bottom: 1rem;">
+                <label style="display: block; margin-bottom: 0.5rem;">Max View Count</label>
+                <input type="number" class="input" value="1" min="0" max="10">
+                <p class="text-muted" style="font-size: var(--text-sm); margin-top: 0.25rem;">Delete movies with this many views or less</p>
+            </div>
+
+            <div style="margin-bottom: 1rem;">
+                <label style="display: block; margin-bottom: 0.5rem;">Days Not Watched</label>
+                <input type="number" class="input" value="30" min="0" max="365">
+                <p class="text-muted" style="font-size: var(--text-sm); margin-top: 0.25rem;">Only delete movies not watched in last X days</p>
+            </div>
+
+            <div style="display: flex; gap: 0.75rem;">
+                <button class="btn btn-primary">Save Settings</button>
+                <button class="btn btn-secondary">Cancel</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // API Configuration
+        const API_BASE = window.location.origin;
+
+        // Load saved theme
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.documentElement.classList.add('dark');
+        }
+
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+            localStorage.setItem('darkMode', document.documentElement.classList.contains('dark'));
+        }
+
+        // Update active nav item
+        document.querySelectorAll('.sidebar-nav-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelectorAll('.sidebar-nav-item').forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // API Functions
+        async function fetchStats() {
+            try {
+                const response = await fetch(`${API_BASE}/api/stats`);
+                if (!response.ok) throw new Error('Failed to fetch stats');
+                return await response.json();
+            } catch (error) {
+                console.error('Error fetching stats:', error);
+                return null;
+            }
+        }
+
+        async function fetchStorage() {
+            try {
+                const response = await fetch(`${API_BASE}/api/storage`);
+                if (!response.ok) throw new Error('Failed to fetch storage');
+                return await response.json();
+            } catch (error) {
+                console.error('Error fetching storage:', error);
+                return null;
+            }
+        }
+
+        async function fetchCleanupCandidates() {
+            try {
+                const response = await fetch(`${API_BASE}/api/cleanup-candidates`);
+                if (!response.ok) throw new Error('Failed to fetch cleanup candidates');
+                return await response.json();
+            } catch (error) {
+                console.error('Error fetching cleanup candidates:', error);
+                return null;
+            }
+        }
+
+        // Update Dashboard with Live Data
+        async function updateDashboard() {
+            // Show loading state
+            console.log('Loading Plex data...');
+
+            // Fetch all data
+            const [stats, storage, cleanup] = await Promise.all([
+                fetchStats(),
+                fetchStorage(),
+                fetchCleanupCandidates()
+            ]);
+
+            if (stats) {
+                updateStats(stats);
+            }
+
+            if (storage) {
+                updateStorageBreakdown(storage);
+            }
+
+            if (cleanup) {
+                updateCleanupCandidates(cleanup);
+            }
+        }
+
+        function updateStats(stats) {
+            // Update stat cards
+            const statsGrid = document.querySelector('.grid.grid-cols-4');
+            if (!statsGrid) return;
+
+            const cards = statsGrid.querySelectorAll('.card');
+
+            // Total Movies
+            if (cards[0]) {
+                cards[0].querySelector('h2').textContent = stats.total_movies;
+                cards[0].querySelector('p').textContent = `${stats.total_movies_size_gb.toLocaleString()} GB`;
+            }
+
+            // TV Shows
+            if (cards[1]) {
+                cards[1].querySelector('h2').textContent = stats.total_tv_shows;
+                cards[1].querySelector('p').textContent = `${stats.total_tv_shows_size_gb.toLocaleString()} GB`;
+            }
+
+            // Storage Used
+            if (cards[2]) {
+                cards[2].querySelector('h2').textContent = `${stats.storage_used_percent}%`;
+                cards[2].querySelector('p').textContent = `${stats.storage_used_gb.toLocaleString()} GB / ${stats.storage_capacity_gb.toLocaleString()} GB`;
+            }
+
+            // Available Space
+            if (cards[3]) {
+                cards[3].querySelector('h2').textContent = `${stats.storage_available_gb.toLocaleString()} GB`;
+                cards[3].querySelector('p').textContent = `${stats.storage_available_percent}% free`;
+            }
+        }
+
+        function updateStorageBreakdown(storage) {
+            const storageCard = document.querySelector('.card h3').parentElement;
+            if (!storageCard) return;
+
+            // Build new HTML for storage breakdown
+            let html = '<h3 style="margin-bottom: 1rem;">Storage Breakdown</h3>';
+
+            storage.breakdown.forEach((item, index) => {
+                const chartColor = `var(--chart-${index + 1})`;
+                html += `
+                    <div style="margin-bottom: 1rem;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                            <span>${item.category}</span>
+                            <span class="text-muted">${item.size_gb.toLocaleString()} GB (${item.percent_of_total}%)</span>
+                        </div>
+                        <div style="height: 8px; background-color: var(--muted); border-radius: 999px; overflow: hidden;">
+                            <div style="width: ${item.percent_of_total}%; height: 100%; background-color: ${chartColor};"></div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            // Add free space bar
+            html += `
+                <div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                        <span>Free Space</span>
+                        <span class="text-muted">${storage.available_gb.toLocaleString()} GB (${(100 - storage.used_percentage).toFixed(1)}%)</span>
+                    </div>
+                    <div style="height: 8px; background-color: var(--muted); border-radius: 999px; overflow: hidden;">
+                        <div style="width: ${100 - storage.used_percentage}%; height: 100%; background-color: var(--chart-4);"></div>
+                    </div>
+                </div>
+            `;
+
+            storageCard.innerHTML = html;
+        }
+
+        function updateCleanupCandidates(cleanup) {
+            const cleanupCard = document.querySelector('.grid.grid-cols-2 .card');
+            if (!cleanupCard) return;
+
+            const title = cleanupCard.querySelector('h3');
+            const subtitle = cleanupCard.querySelector('p.text-muted');
+            const listContainer = cleanupCard.querySelector('div[style*="margin-bottom: 1rem"]');
+
+            // Update title and subtitle
+            subtitle.textContent = `${cleanup.total_candidates} movies ready for deletion`;
+
+            // Update list
+            let html = '';
+            cleanup.candidates.slice(0, 3).forEach(movie => {
+                const watchedText = movie.last_viewed === 'Never' ? 'Never watched' : `Last watched: ${movie.last_viewed}`;
+                html += `
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0;">
+                        <div>
+                            <div style="font-weight: var(--font-weight-medium);">${movie.title} (${movie.year || 'Unknown'})</div>
+                            <div class="text-muted" style="font-size: var(--text-sm);">${movie.size_gb} GB • ${watchedText}</div>
+                        </div>
+                        <button class="btn-destructive" style="padding: 0.25rem 0.75rem; font-size: var(--text-sm);">Delete</button>
+                    </div>
+                `;
+            });
+
+            listContainer.innerHTML = html;
+
+            // Update tip
+            const tipText = cleanupCard.parentElement.querySelector('.card:last-child p');
+            if (tipText) {
+                tipText.textContent = `You can free up ${cleanup.total_size_gb.toLocaleString()} GB by deleting unwatched movies older than 30 days.`;
+            }
+        }
+
+        // Auto-refresh every 60 seconds
+        let autoRefreshInterval;
+
+        function startAutoRefresh() {
+            stopAutoRefresh();
+            autoRefreshInterval = setInterval(updateDashboard, 60000);
+        }
+
+        function stopAutoRefresh() {
+            if (autoRefreshInterval) {
+                clearInterval(autoRefreshInterval);
+            }
+        }
+
+        // Load data on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            updateDashboard();
+            startAutoRefresh();
+        });
+
+        // Stop auto-refresh when page is hidden
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                stopAutoRefresh();
+            } else {
+                startAutoRefresh();
+                updateDashboard();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  plex-manager:
+    build:
+      context: .
+      dockerfile: web/Dockerfile
+    container_name: plex-manager
+    restart: unless-stopped
+    ports:
+      - "5002:5000"
+    environment:
+      - PLEX_URL=${PLEX_URL:-http://mirror.seedhost.eu:32108}
+      - PLEX_TOKEN=${PLEX_TOKEN:-j89Uh7HxZfGPEj3nkq9Z}
+      - TOTAL_CAPACITY_GB=${TOTAL_CAPACITY_GB:-3700}
+      - SSH_HOST=${SSH_HOST:-mirror.seedhost.eu}
+      - SSH_USER=${SSH_USER:-desispeed}
+      - REMOTE_PATH=${REMOTE_PATH:-/home32}
+      - PORT=${PORT:-5000}
+      - FLASK_DEBUG=${FLASK_DEBUG:-False}
+      - FLASK_ENV=${FLASK_ENV:-production}
+    volumes:
+      - ./web:/app/web:ro
+      - ./plex_cleanup.py:/app/plex_cleanup.py:ro
+      - ./storage_analyzer.py:/app/storage_analyzer.py:ro
+      - ./disk_utils.py:/app/disk_utils.py:ro
+    networks:
+      - plex-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/api/stats"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  plex-network:
+    driver: bridge

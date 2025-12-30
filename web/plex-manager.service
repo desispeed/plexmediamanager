@@ -1,0 +1,16 @@
+[Unit]
+Description=Plex Media Manager Web Application
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+WorkingDirectory=/var/www/plex-manager/web
+Environment="PATH=/usr/bin:/usr/local/bin"
+EnvironmentFile=/var/www/plex-manager/web/.env
+ExecStart=/usr/bin/python3 /var/www/plex-manager/web/app.py
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
