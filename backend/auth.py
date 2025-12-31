@@ -89,10 +89,10 @@ class AuthManager:
         """Verify TOTP token"""
         if username not in self.users:
             return False
-        
+
         totp_secret = self.users[username]['totp_secret']
         totp = pyotp.TOTP(totp_secret)
-        return totp.verify(token, valid_window=1)  # Allow 1 step tolerance
+        return totp.verify(token, valid_window=2)  # Allow 2 step tolerance (±60 seconds)
     
     def enable_totp(self, username):
         """Enable TOTP for user after successful verification"""
