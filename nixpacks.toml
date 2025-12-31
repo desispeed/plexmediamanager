@@ -8,7 +8,7 @@ nixLibs = ['zlib', 'libgcc']
 [phases.install]
 cmds = [
     'npm ci',
-    'cd backend && pip install -r requirements.txt'
+    'cd backend && pip install --break-system-packages -r requirements.txt'
 ]
 
 [phases.build]
