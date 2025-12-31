@@ -19,11 +19,13 @@ services:
       - PORT=${PORT:-5000}
       - FLASK_DEBUG=${FLASK_DEBUG:-False}
       - FLASK_ENV=${FLASK_ENV:-production}
+      - DATA_DIR=/data
     volumes:
       - ./web:/app/web:ro
       - ./plex_cleanup.py:/app/plex_cleanup.py:ro
       - ./storage_analyzer.py:/app/storage_analyzer.py:ro
       - ./disk_utils.py:/app/disk_utils.py:ro
+      - plex-manager-data:/data
     networks:
       - plex-network
     healthcheck:
@@ -32,6 +34,10 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
+
+volumes:
+  plex-manager-data:
+    driver: local
 
 networks:
   plex-network:
