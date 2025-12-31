@@ -88,11 +88,32 @@ class AuthManager:
     def verify_totp(self, username, token):
         """Verify TOTP token"""
         if username not in self.users:
+            print(f"TOTP: User {username} not found")
+            return False
+
+        # Sanitize token: remove spaces, dashes, and trim whitespace
+        original_token = token
+        if token:
+            token = str(token).strip().replace(' ', '').replace('-', '')
+
+        print(f"TOTP: Verifying token for {username}")
+        print(f"TOTP: Original token: '{original_token}', Sanitized: '{token}'")
+
+        # Validate token format (should be 6 digits)
+        if not token or not token.isdigit() or len(token) != 6:
+            print(f"TOTP: Invalid token format - length: {len(token) if token else 0}, isdigit: {token.isdigit() if token else False}")
             return False
 
         totp_secret = self.users[username]['totp_secret']
         totp = pyotp.TOTP(totp_secret)
-        return totp.verify(token, valid_window=2)  # Allow 2 step tolerance (±60 seconds)
+
+        # Generate current token for debugging
+        current_token = totp.now()
+        print(f"TOTP: Current valid token would be: {current_token}")
+
+        result = totp.verify(token, valid_window=2)  # Allow 2 step tolerance (±60 seconds)
+        print(f"TOTP: Verification result: {result}")
+        return result
     
     def enable_totp(self, username):
         """Enable TOTP for user after successful verification"""
