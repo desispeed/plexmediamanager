@@ -1,0 +1,18 @@
+# Nixpacks configuration for Railway deployment
+# This app requires both Node.js (frontend) and Python (backend)
+
+[phases.setup]
+nixPkgs = ['nodejs_18', 'python311', 'python311Packages.pip']
+nixLibs = ['zlib', 'libgcc']
+
+[phases.install]
+cmds = [
+    'npm ci',
+    'cd backend && pip install -r requirements.txt'
+]
+
+[phases.build]
+cmds = ['npm run build']
+
+[start]
+cmd = 'cd backend && python3 api.py'
