@@ -25,10 +25,17 @@ RESET_TOKEN_EXPIRATION_HOURS = 1
 
 # Use environment variable for data directory, with fallback to current directory
 DATA_DIR = os.getenv('DATA_DIR', os.path.dirname(os.path.abspath(__file__)))
-USERS_FILE = os.path.join(DATA_DIR, 'users.json')
 
-# Ensure data directory exists
-os.makedirs(DATA_DIR, exist_ok=True)
+# Ensure data directory exists (create if needed, handle permissions gracefully)
+try:
+    os.makedirs(DATA_DIR, exist_ok=True)
+except (OSError, PermissionError) as e:
+    print(f"Warning: Could not create data directory {DATA_DIR}: {e}")
+    print(f"Falling back to current directory")
+    DATA_DIR = os.path.dirname(os.path.abspath(__file__))
+    os.makedirs(DATA_DIR, exist_ok=True)
+
+USERS_FILE = os.path.join(DATA_DIR, 'users.json')
 
 class AuthManager:
     def __init__(self):
