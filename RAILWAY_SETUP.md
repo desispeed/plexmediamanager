@@ -17,7 +17,7 @@ Set up Railway's persistent volume to store user data across deployments.
 5. Click **+ New Volume**
 6. Configure the volume:
    - **Mount Path**: `/data`
-   - **Size**: 1 GB (sufficient for user data)
+   - **Size**: 5 GB (Railway default - more than sufficient for user data)
 7. Click **Add**
 
 ### 2. Set Environment Variable
